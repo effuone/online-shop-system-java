@@ -1,5 +1,6 @@
 package Models;
 
+
 public class Product {
     private String _name;
     private double _price;

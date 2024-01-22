@@ -1,5 +1,9 @@
 package Models;
 
+import Models.User.AbstractUser;
+import Models.User.AdminUser;
+import Models.User.RegularUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OnlineShop {
-    private Map<Integer, User> _users;
+    private Map<Integer, AbstractUser> _users;
     private Map<String, Product> _products;
     private List<Order> _orderHistory;
 
@@ -15,10 +19,6 @@ public class OnlineShop {
         _users = new HashMap<>();
         _products = new HashMap<>();
         _orderHistory = new ArrayList<>();
-    }
-
-    public void addUser(User user) {
-        _users.put(user.getId(), user);
     }
 
     public void addProduct(Product product) {
@@ -31,23 +31,45 @@ public class OnlineShop {
         }
     }
 
-    public void displayUsers() {
-        for (User user : _users.values()) {
+    public AbstractUser getUserById(int userId) {
+        return _users.get(userId);
+    }
+
+    public void displayUsers(int userId) {
+        AbstractUser requestingUser = _users.get(userId);
+        if (!(requestingUser instanceof AdminUser)) {
+            System.out.println("Only admin users can view the list of users.");
+            return;
+        }
+
+        for (AbstractUser user : _users.values()) {
             System.out.println(user);
         }
     }
 
+
     public void buyProduct(int userId, String productName, int quantity) {
-        User user = _users.get(userId);
+        AbstractUser user = _users.get(userId);
+        if (!(user instanceof RegularUser)) {
+            System.out.println("Only regular users can buy products.");
+            return;
+        }
+
+        RegularUser regularUser = (RegularUser) user;
         Product product = _products.get(productName);
 
-        if (user != null && product != null && product.getQuantity() >= quantity) {
+        if (product != null && product.getQuantity() >= quantity) {
             double totalCost = quantity * product.getPrice();
-            if (user.getBalance() >= totalCost) {
-                user.updateBalance(-totalCost);
+
+            if (regularUser.getSubscriptionType() == SubscriptionType.PREMIUM) {
+                totalCost *= 0.9;
+            }
+
+            if (regularUser.getBalance() >= totalCost) {
+                regularUser.updateBalance(-totalCost);
                 product.adjustQuantity(-quantity);
                 Order order = new Order(userId, productName, quantity, totalCost);
-                user.addOrder(order);
+                regularUser.addOrder(order);
                 _orderHistory.add(order);
                 System.out.println("Purchase successful!");
             } else {
@@ -58,15 +80,22 @@ public class OnlineShop {
         }
     }
 
+
     public boolean returnProduct(int userId, String productName, int quantity) {
-        User user = _users.get(userId);
-        if (user == null) {
+        AbstractUser user = _users.get(userId);
+        if (!(user instanceof RegularUser)) {
+            System.out.println("Only regular users can return products.");
+            return false;
+        }
+
+        RegularUser regularUser = (RegularUser) user;
+        if (regularUser == null) {
             System.out.println("User not found.");
             return false;
         }
 
         Order orderToReturn = null;
-        for (Order order : user.getOrders()) {
+        for (Order order : regularUser.getOrders()) {
             if (order.getProductName().equals(productName) && order.getQuantity() >= quantity) {
                 orderToReturn = order;
                 break;
@@ -84,11 +113,11 @@ public class OnlineShop {
             return false;
         }
 
-        user.updateBalance(orderToReturn.getTotalSum());
+        regularUser.updateBalance(orderToReturn.getTotalSum());
         product.adjustQuantity(quantity);
 
         if (orderToReturn.getQuantity() == quantity) {
-            user.getOrders().remove(orderToReturn);
+            regularUser.getOrders().remove(orderToReturn);
         } else {
             orderToReturn.setQuantity(orderToReturn.getQuantity() - quantity);
             orderToReturn.updateTotalSum(product.getPrice());
@@ -98,61 +127,45 @@ public class OnlineShop {
 
 
     public void displayUserOrders(int userId) {
-        User user = _users.get(userId);
-        if (user != null) {
-            List<Order> orders = user.getOrders();
-            if (orders.isEmpty()) {
-                System.out.println("User has no orders.");
-            } else {
-                for (Order order : orders) {
-                    System.out.println(order);
-                }
-            }
-        } else {
-            System.out.println("User not found.");
+        AbstractUser user = _users.get(userId);
+        if (!(user instanceof AdminUser)) {
+            System.out.println("Only admin users can view order history.");
+            return;
         }
+
+        AdminUser adminUser = (AdminUser) user;
+        adminUser.displayOrderHistory(_orderHistory);
     }
 
-    public void updateProductDetails(String productName, Double price, Integer quantity, String description) {
-        Product product = _products.get(productName);
-        if (product != null) {
-            if (price != null) {
-                product.setPrice(price);
-            }
-            if (quantity != null) {
-                product.setQuantity(quantity);
-            }
-            if (description != null && !description.isEmpty()) {
-                product.setDescription(description);
-            }
-            System.out.println("Product details updated successfully!");
-        } else {
-            System.out.println("Product not found.");
+    public int addRegularUser(String name, double balance) {
+        RegularUser user = new RegularUser(name, balance);
+        var id = user.getId();
+        _users.put(user.getId(), user);
+        return id;
+    }
+
+    public int addAdminUser(String name) {
+        AdminUser user = new AdminUser(name);
+        var id = user.getId();
+        _users.put(id, user);
+        return id;
+    }
+
+    public void applyDiscount(int adminUserId, int regularUserId, double discountPercentage) {
+        AbstractUser adminUser = _users.get(adminUserId);
+        if (!(adminUser instanceof AdminUser)) {
+            System.out.println("Only admin users can apply discounts.");
+            return;
         }
-    }
 
-    public void updateUserDetails(int userId, String name, Double balance) {
-        User user = _users.get(userId);
-        if (user != null) {
-            if (name != null && !name.isEmpty()) {
-                user.setName(name);
-            }
-            if (balance != null) {
-                user.setBalance(balance);
-            }
-            System.out.println("User details updated successfully!");
-        } else {
-            System.out.println("User not found.");
+        AbstractUser regularUser = _users.get(regularUserId);
+        if (!(regularUser instanceof RegularUser)) {
+            System.out.println("Discount can only be applied to regular users.");
+            return;
         }
-    }
 
-    public Product getProductByName(String productName) {
-        return _products.get(productName);
+        RegularUser targetUser = (RegularUser) regularUser;
+        targetUser.applyDiscount(discountPercentage);
     }
-
-    public User getUserById(int userId) {
-        return _users.get(userId);
-    }
-
 }
 
