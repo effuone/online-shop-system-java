@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="online-shop-system-java">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/Database connection/lib/postgresql-42.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

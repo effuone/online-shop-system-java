@@ -6,7 +6,7 @@ import java.util.List;
 public class AdminUser extends AbstractUser {
 
     public AdminUser(String name) {
-        this._name = name;
+        super(name, 0);
     }
 
     @Override

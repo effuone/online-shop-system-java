@@ -1,66 +1,79 @@
 package Models;
-public class Order {
-    private int _userId;
-    private String _productName;
-    private int _quantity;
-    private double _totalSum;
 
-    public Order(int userId, String productName, int quantity, double totalSum) {
-        this._userId = userId;
-        this._productName = productName;
-        this._quantity = quantity;
-        this._totalSum = totalSum;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Order {
+    private int id;
+    private int userId;
+    private LocalDateTime orderDate;
+    private String status;
+    private List<OrderItem> orderItems;
+
+    // Constructor
+    public Order(int userId, LocalDateTime orderDate, String status) {
+        this.userId = userId;
+        this.orderDate = orderDate;
+        this.status = status;
+        this.orderItems = new ArrayList<>();
+    }
+
+    // Getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getUserId() {
-        return _userId;
-    }
-
-    public String getProductName() {
-        return _productName;
-    }
-
-    public int getQuantity() {
-        return _quantity;
-    }
-
-    public double getTotalSum() {
-        return _totalSum;
+        return userId;
     }
 
     public void setUserId(int userId) {
-        this._userId = userId;
+        this.userId = userId;
     }
 
-    public void setProductName(String productName) {
-        this._productName = productName;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 
-    public void setQuantity(int quantity) {
-        if(quantity < 0) {
-            throw new IllegalArgumentException("Quantity cannot be negative.");
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public void addOrderItem(OrderItem item) {
+        if (item != null) {
+            this.orderItems.add(item);
         }
-        this._quantity = quantity;
-    }
-
-    public void setTotalSum(double totalSum) {
-        if(totalSum < 0) {
-            throw new IllegalArgumentException("Total sum cannot be negative.");
-        }
-        this._totalSum = totalSum;
-    }
-
-    public void updateTotalSum(double pricePerUnit) {
-        this._totalSum = this._quantity * pricePerUnit;
     }
 
     @Override
     public String toString() {
         return "Order{" +
-                "userId=" + _userId +
-                ", productName='" + _productName + '\'' +
-                ", quantity=" + _quantity +
-                ", totalSum=" + _totalSum +
+                "id=" + id +
+                ", userId=" + userId +
+                ", orderDate=" + orderDate +
+                ", status='" + status + '\'' +
+                ", orderItems=" + orderItems +
                 '}';
     }
 }

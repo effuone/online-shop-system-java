@@ -2,10 +2,19 @@ package Models;
 
 
 public class Product {
+    private int _id;
     private String _name;
     private double _price;
     private int _quantity;
     private String _description;
+
+    public Product(int id, String name, double price, int quantity, String description) {
+        this._name = name;
+        this._id = id;
+        this._price = price;
+        this._quantity = quantity;
+        this._description = description;
+    }
 
     public Product(String name, double price, int quantity, String description) {
         this._name = name;
@@ -16,6 +25,9 @@ public class Product {
 
     public String getName() {
         return _name;
+    }
+    public int getId() {
+        return _id;
     }
 
     public double getPrice() {

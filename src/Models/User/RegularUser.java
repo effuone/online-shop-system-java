@@ -8,10 +8,9 @@ import java.util.List;
 
 public class RegularUser extends AbstractUser {
     private SubscriptionType _subType;
+
     public RegularUser(String name, double balance) {
-        this._name = name;
-        this._balance = balance;
-        this._orders = new ArrayList<>();
+        super(name, balance);
         this._subType = SubscriptionType.ORDINARY;
     }
     public void setNewSubscriptionType(SubscriptionType subType)
