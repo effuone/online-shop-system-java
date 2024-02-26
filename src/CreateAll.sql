@@ -15,6 +15,15 @@ CREATE TABLE IF NOT EXISTS  products (
                           description TEXT
 );
 
+CREATE TABLE orders (
+                        id SERIAL PRIMARY KEY,
+                        user_id INT NOT NULL,
+                        order_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                        status VARCHAR(50) DEFAULT 'PENDING',
+                        FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
 CREATE TABLE IF NOT EXISTS  order_items (
                              id SERIAL PRIMARY KEY,
                              order_id INT NOT NULL,
