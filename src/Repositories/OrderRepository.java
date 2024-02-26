@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OrderRepository implements IRepository<Order> {
 
-    private Connection connection;
+    private final Connection connection;
 
     public OrderRepository(Connection connection) {
         this.connection = connection;
@@ -108,21 +108,5 @@ public class OrderRepository implements IRepository<Order> {
         order.setId(id);
 
         return order;
-    }
-
-    private List<OrderItem> retrieveOrderItemsForOrder(int orderId) throws SQLException {
-        List<OrderItem> items = new ArrayList<>();
-        String sql = "SELECT * FROM order_items WHERE order_id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, orderId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int productId = resultSet.getInt("product_id");
-                int quantity = resultSet.getInt("quantity");
-                OrderItem item = new OrderItem(orderId, productId, quantity);
-                items.add(item);
-            }
-        }
-        return items;
     }
 }

@@ -3,7 +3,6 @@ package Models.User;
 import Models.Order;
 import Models.SubscriptionType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RegularUser extends AbstractUser {
@@ -13,8 +12,8 @@ public class RegularUser extends AbstractUser {
         super(name, balance);
         this._subType = SubscriptionType.ORDINARY;
     }
-    public void setNewSubscriptionType(SubscriptionType subType)
-    {
+
+    public void setNewSubscriptionType(SubscriptionType subType) {
         this._subType = subType;
     }
 
@@ -69,7 +68,7 @@ public class RegularUser extends AbstractUser {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "RegularUser{" +
                 "id=" + _id +
                 ", name='" + _name + '\'' +
                 ", balance=" + _balance +

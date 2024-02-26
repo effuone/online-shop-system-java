@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner _scanner = new Scanner(System.in);
+    private final static Scanner _scanner = new Scanner(System.in);
 
-    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/kaskr-db";
-    private static final String USERNAME = "test";
-    private static final String PASSWORD = "test";
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/jaqsylyq-db";
+    private static final String USERNAME = "jaqsylyq-user";
+    private static final String PASSWORD = "jaqsylyq-password";
 
     public static void main(String[] args) {
         try {

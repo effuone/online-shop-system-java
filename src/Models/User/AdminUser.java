@@ -23,4 +23,14 @@ public class AdminUser extends AbstractUser {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "AdminUser{" +
+                "_id=" + _id +
+                ", _name='" + _name + '\'' +
+                ", _balance=" + _balance +
+                ", _orders=" + _orders +
+                '}';
+    }
 }

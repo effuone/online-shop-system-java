@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UserController {
-    private UserRepository userRepository;
-    private Scanner scanner;
+    private final UserRepository userRepository;
+    private final Scanner scanner;
 
     public UserController(Connection connection) {
         this.userRepository = new UserRepository(connection);

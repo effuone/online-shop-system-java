@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserRepository implements IRepository<AbstractUser> {
 
-    private Connection connection;
+    private final Connection connection;
 
     public UserRepository(Connection connection) {
         this.connection = connection;
